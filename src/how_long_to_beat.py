@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import sys
+import json
 import requests
+from requests.exceptions import HTTPError
+import sys
 
 BASE_URL = 'https://howlongtobeat.com/'
 ID_URL = BASE_URL + 'game?id='
@@ -33,28 +35,80 @@ def main():
     elif user_cmd == CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT) + 1):
         user_quit()
     else:
-        print("Sorry, I don't recognise that command.")
+        print('Sorry, I don\'t recognise that command.')
 
 def search_name():
-    search_str = input('Enter game name, ID or search phrase...\n').strip()
-    print('You searched for: ' + search_str)
+    # Build search JSON payload
+    search_payload = {
+        'searchType': 'games',
+        'searchTerms': [],
+        'searchPage': 1,
+        'size': 20,
+        'searchOptions': {
+            'games': {
+                'userId': 0,
+                'platform': '',
+                'sortCategory': 'popular',
+                'rangeCategory': 'main',
+                'rangeTime': {
+                    'min': None,
+                    'max': None,
+                },
+                'gameplay': {
+                    'perspective': '',
+                    'flow': '',
+                    'genre': '',
+                },
+                'rangeYear': {
+                    'min': '',
+                    'max': ''
+                },
+                'modifier': '',
+            },
+            'users': {
+                'sortCategory': 'postcount',
+            },
+            'filter': '',
+            'sort': 0,
+            'randomizer': 0,
+        },
+    }
 
-    # TODO: Make request to correct URL and add required arguments
-    response = requests.get(BASE_URL)
+    search_term = input('Enter game name, ID or search phrase...\n').strip().lower().split(' ')
+    search_payload['searchTerms'] = search_term
+
+    # Set required request headers
+    search_headers = {
+        'content-type': 'application/json',
+        'origin': BASE_URL,
+        'referer': BASE_URL,
+        'user-agent': 'steam backlog python script',
+    }
+
+    response = requests.post(
+        SEARCH_URL,
+        data = json.dumps(search_payload),
+        headers = search_headers,
+    )
+
     try:
+        # Parse request response
         response.raise_for_status()
-        # TODO: Use response.json
-        print(response.text)
-    except:
-        print('An error occured making your request. Please try again.\n')
-        print('Status code: ' + response.status_code)
+        data = json.loads(response.text)
+        # TODO: Do something with the data
+        print(data)
+    except HTTPError as e:
+        # Error handling
+        print('An error occured making your request. Please try again.')
+        print('\tStatus code: {status}'.format(status=str(e.response.status_code)))
+        print('\tResponse: {reason}'.format(reason=e.response.reason))
 
 def get_by_id():
     # TODO: Finish implementation
-    print("TODO")
+    print('TODO')
 
 def user_quit():
     sys.exit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

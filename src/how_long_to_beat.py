@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-from types import SimpleNamespace
 import requests
 
 BASE_URL = 'https://howlongtobeat.com/'
@@ -8,17 +7,15 @@ ID_URL = BASE_URL + 'game?id='
 SEARCH_URL = BASE_URL + 'api/search'
 
 def main():
-    # SimpleNamespace required because Python match doesn't allow constants, for some reason
-    cmds = SimpleNamespace()
-    cmds.SEARCH = 'SEARCH'
-    cmds.ID = 'ID'
-    cmds.QUIT = 'QUIT'
+    CMD_SEARCH = 'SEARCH'
+    CMD_ID = 'ID'
+    CMD_QUIT = 'QUIT'
 
     # TODO: Add support for Steam library & CSV commands
     cmd_list = [
-        cmds.SEARCH,
-        cmds.ID,
-        cmds.QUIT,
+        CMD_SEARCH,
+        CMD_ID,
+        CMD_QUIT,
     ]
 
     input_str = 'Please enter your desired command/number:\n'
@@ -29,15 +26,14 @@ def main():
     user_cmd = input(input_str).strip().upper()
 
     # Perform user's
-    match user_cmd:
-        case cmds.SEARCH:
-            search_name()
-        case cmds.ID:
-            get_by_id()
-        case cmds.QUIT:
-            user_quit()
-        case _:
-            print("Sorry, I don't recognise that command.")
+    if user_cmd == CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH) + 1):
+        search_name()
+    elif user_cmd == CMD_ID or user_cmd == str(cmd_list.index(CMD_ID) + 1):
+        get_by_id()
+    elif user_cmd == CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT) + 1):
+        user_quit()
+    else:
+        print("Sorry, I don't recognise that command.")
 
 def search_name():
     search_str = input('Enter game name, ID or search phrase...\n').strip()

@@ -11,7 +11,6 @@ Uses data from:
 ## Features
 - Bulk estimation of video game playtime through user's Steam library.
   - See how long it will take to work through all those games you bought on sale, but never played!
-  - Support for Steam collections.
 - Review estimates for video games by name or by ID.
   - Don't need *all* that data? Just see how long it'll take you to 
 - Lightweight command-line interface, perfect for working with data.

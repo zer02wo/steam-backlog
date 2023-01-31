@@ -27,7 +27,7 @@ def main():
 
     user_cmd = input(input_str).strip().upper()
 
-    # Perform user's
+    # Perform user's desired command
     if user_cmd == CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH) + 1):
         search_name()
     elif user_cmd == CMD_ID or user_cmd == str(cmd_list.index(CMD_ID) + 1):
@@ -53,6 +53,11 @@ def handle_http_error(e: HTTPError):
     print('An error occured making your request. Please try again.')
     print('\tStatus code: {status}'.format(status = str(e.response.status_code)))
     print('\tResponse: {reason}'.format(reason = e.response.reason))
+
+def format_half_hours(seconds: int) -> float:
+    hours = seconds / 3600
+
+    return round(hours * 2) / 2
 
 def search_name():
     # Build search JSON payload
@@ -106,9 +111,23 @@ def search_name():
     try:
         # Parse request response
         response.raise_for_status()
-        data = json.loads(response.text)
-        # TODO: Do something with the data
+        data = json.loads(response.text)['data'][0]
+
         print(data)
+
+        game_name = data['game_name']
+        story_duration = format_half_hours(data['comp_main'])
+        sides_duration = format_half_hours(data['comp_plus'])
+        compl_duration = format_half_hours(data['comp_100'])
+        style_duration = format_half_hours(data['comp_all'])
+
+        output = '''Most relevant result for {0}:
+            Main Story - {1}
+            Main + Sides - {2}
+            Completionist - {3}
+            All Styles - {4}
+        '''.format(game_name, story_duration, sides_duration, compl_duration, style_duration)
+        print(output)
     except HTTPError as e:
         handle_http_error(e)
 

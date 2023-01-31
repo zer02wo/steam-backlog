@@ -138,7 +138,13 @@ def search_name():
             Main + Sides - {2}
             Completionist - {3}
             All Styles - {4}
-        '''.format(game_name, story_duration, sides_duration, compl_duration, style_duration)
+        '''.format(
+            game_name,
+            story_duration,
+            sides_duration,
+            compl_duration,
+            style_duration
+        )
         print(output)
     except HTTPError as e:
         handle_http_error(e)

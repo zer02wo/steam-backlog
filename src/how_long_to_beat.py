@@ -28,6 +28,10 @@ def main():
 
     user_cmd = input(input_str).strip().upper()
 
+    # TODO: Look into changing text colour for each command
+        # Then output text for command in same colour
+        # User input remains default
+
     # Perform user's desired command
     if user_cmd == CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH) + 1):
         search_name()
@@ -119,7 +123,7 @@ def search_name():
 
         if not data:
             print('No matches returned for this query. Try to match the game name.')
-            return
+            search_name()
 
         data = data[0]
 
@@ -147,7 +151,7 @@ def get_by_id():
 
     if not game_id.isdigit():
         print('Invalid ID. Must be an integer.')
-        return
+        get_by_id()
 
     # Set required request headers
     id_headers = get_http_headers(False)

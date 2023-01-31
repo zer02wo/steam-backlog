@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+import sys
 import json
 import requests
 from requests.exceptions import HTTPError
-import sys
+from bs4 import BeautifulSoup
 
 BASE_URL = 'https://howlongtobeat.com/'
 ID_URL = BASE_URL + 'game/'

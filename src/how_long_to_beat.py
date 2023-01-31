@@ -115,7 +115,13 @@ def search_name():
     try:
         # Parse request response
         response.raise_for_status()
-        data = json.loads(response.text)['data'][0]
+        data = json.loads(response.text)['data']
+
+        if not data:
+            print('No matches returned for this query. Try to match the game name.')
+            return
+
+        data = data[0]
 
         game_name = data['game_name']
         story_duration = format_half_hours(data['comp_main'])

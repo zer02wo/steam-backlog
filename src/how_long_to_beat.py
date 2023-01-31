@@ -153,9 +153,23 @@ def get_by_id():
     try:
         # Parse request response
         response.raise_for_status()
-        # TODO: Parse HTML for data
         html = response.text
-        print(html)
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Get game name from HTML
+        game_name_selector = 'div[class^="GameHeader_profile_header"]'
+        game_name = soup.select_one(game_name_selector + '>' + game_name_selector).text.strip()
+        print('Game completion times for {0}:'.format(game_name))
+
+        # Get game completion type and duration
+        for time_type in soup.select('li[class^="GameStats"] > h4'):
+            time_amount = time_type.find_next_sibling('h5')
+            time_amount = time_amount.text.replace('\u00BD', '.5')
+
+            if time_amount == '--':
+                time_amount = 'No Data'
+
+            print('\t{0} - {1}'.format(time_type.text, time_amount))
     except HTTPError as e:
         handle_http_error(e)
 

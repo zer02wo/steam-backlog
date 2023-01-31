@@ -60,7 +60,7 @@ def search_name():
         'searchType': 'games',
         'searchTerms': [],
         'searchPage': 1,
-        'size': 20,
+        'size': 1,
         'searchOptions': {
             'games': {
                 'userId': 0,

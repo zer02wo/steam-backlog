@@ -37,6 +37,18 @@ def main():
     else:
         print('Sorry, I don\'t recognise that command.')
 
+def get_http_headers(isJson: bool) -> dict:
+    base_headers = {
+        'origin': BASE_URL,
+        'referer': BASE_URL,
+        'user-agent': 'steam backlog python script',
+    }
+
+    if isJson:
+        base_headers['content-type'] = 'application/json'
+
+    return base_headers
+
 def handle_http_error(e: HTTPError):
     print('An error occured making your request. Please try again.')
     print('\tStatus code: {status}'.format(status = str(e.response.status_code)))
@@ -83,12 +95,7 @@ def search_name():
     search_payload['searchTerms'] = search_term
 
     # Set required request headers
-    search_headers = {
-        'content-type': 'application/json',
-        'origin': BASE_URL,
-        'referer': BASE_URL,
-        'user-agent': 'steam backlog python script',
-    }
+    search_headers = get_http_headers(True)
 
     response = requests.post(
         url = SEARCH_URL,
@@ -116,11 +123,7 @@ def get_by_id():
         return
 
     # Set required request headers
-    id_headers = {
-        'origin': BASE_URL,
-        'referer': BASE_URL,
-        'user-agent': 'steam backlog python script',
-    }
+    id_headers = get_http_headers(False)
 
     response = requests.get(
         url = '{path}{id}'.format(path = ID_URL, id = game_id),

@@ -5,7 +5,7 @@ from requests.exceptions import HTTPError
 import sys
 
 BASE_URL = 'https://howlongtobeat.com/'
-ID_URL = BASE_URL + 'game?id='
+ID_URL = BASE_URL + 'game/'
 SEARCH_URL = BASE_URL + 'api/search'
 
 def main():
@@ -23,7 +23,7 @@ def main():
     input_str = 'Please enter your desired command/number:\n'
 
     for i, cmd in enumerate(cmd_list, start=1):
-        input_str += '{index}: {command}\n'.format(index=i, command=cmd.capitalize())
+        input_str += '{index}: {command}\n'.format(index = i, command = cmd.capitalize())
 
     user_cmd = input(input_str).strip().upper()
 
@@ -36,6 +36,11 @@ def main():
         user_quit()
     else:
         print('Sorry, I don\'t recognise that command.')
+
+def handle_http_error(e: HTTPError):
+    print('An error occured making your request. Please try again.')
+    print('\tStatus code: {status}'.format(status = str(e.response.status_code)))
+    print('\tResponse: {reason}'.format(reason = e.response.reason))
 
 def search_name():
     # Build search JSON payload
@@ -74,7 +79,7 @@ def search_name():
         },
     }
 
-    search_term = input('Enter game name, ID or search phrase...\n').strip().lower().split(' ')
+    search_term = input('Enter game name or search phrase...\n').strip().lower().split(' ')
     search_payload['searchTerms'] = search_term
 
     # Set required request headers
@@ -86,7 +91,7 @@ def search_name():
     }
 
     response = requests.post(
-        SEARCH_URL,
+        url = SEARCH_URL,
         data = json.dumps(search_payload),
         headers = search_headers,
     )
@@ -98,14 +103,40 @@ def search_name():
         # TODO: Do something with the data
         print(data)
     except HTTPError as e:
-        # Error handling
-        print('An error occured making your request. Please try again.')
-        print('\tStatus code: {status}'.format(status=str(e.response.status_code)))
-        print('\tResponse: {reason}'.format(reason=e.response.reason))
+        handle_http_error(e)
+
+    main()
 
 def get_by_id():
-    # TODO: Finish implementation
-    print('TODO')
+    # TODO: Add support for Steam ID too
+    game_id = input('Enter HLTB game ID...\n').strip()
+
+    if not game_id.isdigit():
+        print('Invalid ID. Must be an integer.')
+        return
+
+    # Set required request headers
+    id_headers = {
+        'origin': BASE_URL,
+        'referer': BASE_URL,
+        'user-agent': 'steam backlog python script',
+    }
+
+    response = requests.get(
+        url = '{path}{id}'.format(path = ID_URL, id = game_id),
+        headers = id_headers,
+    )
+
+    try:
+        # Parse request response
+        response.raise_for_status()
+        # TODO: Parse HTML for data
+        html = response.text
+        print(html)
+    except HTTPError as e:
+        handle_http_error(e)
+
+    main()
 
 def user_quit():
     sys.exit()

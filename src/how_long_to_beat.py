@@ -176,6 +176,7 @@ def get_by_id():
     main()
 
 def user_quit():
+    print('Goodbye! :)')
     sys.exit()
 
 if __name__ == '__main__':

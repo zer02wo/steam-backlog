@@ -54,7 +54,10 @@ def handle_http_error(e: HTTPError):
     print('\tStatus code: {status}'.format(status = str(e.response.status_code)))
     print('\tResponse: {reason}'.format(reason = e.response.reason))
 
-def format_half_hours(seconds: int) -> float:
+def format_half_hours(seconds: int) -> float | str:
+    if not seconds:
+        return 'No Data'
+
     hours = seconds / 3600
 
     return round(hours * 2) / 2

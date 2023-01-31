@@ -116,8 +116,6 @@ def search_name():
         response.raise_for_status()
         data = json.loads(response.text)['data'][0]
 
-        print(data)
-
         game_name = data['game_name']
         story_duration = format_half_hours(data['comp_main'])
         sides_duration = format_half_hours(data['comp_plus'])

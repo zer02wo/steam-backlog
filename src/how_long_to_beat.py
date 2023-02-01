@@ -26,6 +26,9 @@ COLOUR_SUFFIX = colours.RESET
 global colour_prefix
 
 def main():
+    global colour_prefix
+    colour_prefix = colours.GREEN
+
     CMD_SEARCH = 'SEARCH'
     CMD_ID = 'ID'
     CMD_QUIT = 'QUIT'
@@ -42,11 +45,7 @@ def main():
     for i, cmd in enumerate(cmd_list, start=1):
         input_str += '{index}: {command}\n'.format(index = i, command = cmd.capitalize())
 
-    user_cmd = input(input_str).strip().upper()
-
-    # TODO: Look into changing text colour for each command
-        # Then output text for command in same colour
-        # User input remains default
+    user_cmd = input(colourise(input_str)).strip().upper()
 
     # Perform user's desired command
     if user_cmd == CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH) + 1):
@@ -56,7 +55,11 @@ def main():
     elif user_cmd == CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT) + 1):
         user_quit()
     else:
-        print('Sorry, I don\'t recognise that command.')
+        print(colourise('Sorry, I don\'t recognise that command.'))
+        main()
+
+def colourise(string: str) -> str:
+    return colour_prefix + string + COLOUR_SUFFIX + '\n'
 
 def get_http_headers(isJson: bool) -> dict:
     base_headers = {

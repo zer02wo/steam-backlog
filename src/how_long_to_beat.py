@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import json
+from types import SimpleNamespace
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
@@ -8,6 +9,21 @@ from bs4 import BeautifulSoup
 BASE_URL = 'https://howlongtobeat.com/'
 ID_URL = BASE_URL + 'game/'
 SEARCH_URL = BASE_URL + 'api/search'
+
+# Define simple namespace for ANSI colour prefixes
+colours = SimpleNamespace()
+colours.GREY = '\033[1;30m'
+colours.RED = '\033[1;31m'
+colours.GREEN = '\033[1;32m'
+colours.YELLOW = '\033[1;33m'
+colours.BLUE = '\033[1;34m'
+colours.MAGENTA = '\033[1;35m'
+colours.CYAN = '\033[1;36m'
+colours.RESET = '\u001b[0m'
+
+# Global colour variables
+COLOUR_SUFFIX = colours.RESET
+global colour_prefix
 
 def main():
     CMD_SEARCH = 'SEARCH'

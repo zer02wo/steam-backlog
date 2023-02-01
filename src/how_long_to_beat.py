@@ -244,7 +244,7 @@ def user_quit():
     global colour_prefix
     colour_prefix = colours.YELLOW
 
-    print(colourise('Goodbye! 👋'))
+    print(colourise('Goodbye! 🤙'))
     sys.exit()
 
 if __name__ == '__main__':

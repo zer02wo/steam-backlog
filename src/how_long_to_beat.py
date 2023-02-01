@@ -74,9 +74,18 @@ def get_http_headers(isJson: bool) -> dict:
     return base_headers
 
 def handle_http_error(e: HTTPError):
-    print('An error occured making your request. Please try again.')
-    print('\tStatus code: {status}'.format(status = str(e.response.status_code)))
-    print('\tResponse: {reason}'.format(reason = e.response.reason))
+    global colour_prefix
+    colour_prefix = colours.RED
+
+    err_str = '''An error occured making your request. Please try again.
+        Status code: {status}
+        Response: {reason}
+    '''.format(
+        status = str(e.response.status_code),
+        reason = e.response.reason
+    )
+
+    print(colourise(err_str))
 
 def format_half_hours(seconds: int) -> float | str:
     if not seconds:

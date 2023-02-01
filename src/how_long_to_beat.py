@@ -96,6 +96,9 @@ def format_half_hours(seconds: int) -> float | str:
     return round(hours * 2) / 2
 
 def search_name():
+    global colour_prefix
+    colour_prefix = colours.BLUE
+
     # Build search JSON payload
     search_payload = {
         'searchType': 'games',
@@ -132,7 +135,7 @@ def search_name():
         },
     }
 
-    search_term = input('Enter game name or search phrase...\n').strip().lower().split(' ')
+    search_term = input(colourise('Enter game name or search phrase...')).strip().lower().split(' ')
     search_payload['searchTerms'] = search_term
 
     # Set required request headers
@@ -150,7 +153,7 @@ def search_name():
         data = json.loads(response.text)['data']
 
         if not data:
-            print('No matches returned for this query. Try to match the game name.')
+            print(colourise('No matches returned for this query. Try to match the game name.'))
             search_name()
 
         data = data[0]
@@ -173,7 +176,8 @@ def search_name():
             compl_duration,
             style_duration
         )
-        print(output)
+
+        print(colourise(output))
     except HTTPError as e:
         handle_http_error(e)
 

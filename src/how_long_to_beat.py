@@ -40,10 +40,10 @@ def main():
         CMD_QUIT,
     ]
 
-    input_str = 'Please enter your desired command/number:\n'
+    input_str = 'Please enter your desired command/number:'
 
     for i, cmd in enumerate(cmd_list, start=1):
-        input_str += '{index}: {command}\n'.format(index = i, command = cmd.capitalize())
+        input_str += '\n{index}: {command}'.format(index = i, command = cmd.capitalize())
 
     user_cmd = input(colourise(input_str)).strip().upper()
 

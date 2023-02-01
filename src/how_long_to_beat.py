@@ -31,15 +31,15 @@ def main():
     global colour_prefix
     colour_prefix = colours.GREEN
 
-    CMD_SEARCH = 'SEARCH'
-    CMD_ID = 'ID'
-    CMD_QUIT = 'QUIT'
+    CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
+    CMD_ID = ['ID', 'DETAIL']
+    CMD_QUIT = ['QUIT', 'Q']
 
     # TODO: Add support for Steam library & CSV commands
     cmd_list = [
-        CMD_SEARCH,
-        CMD_ID,
-        CMD_QUIT,
+        CMD_SEARCH[0],
+        CMD_ID[0],
+        CMD_QUIT[0],
     ]
 
     # Output list of possible commands/IDs
@@ -51,11 +51,11 @@ def main():
     user_cmd = input(colourise(input_str)).strip().upper()
 
     # Perform user's desired command
-    if user_cmd == CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH) + 1):
+    if user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
         search_name()
-    elif user_cmd == CMD_ID or user_cmd == str(cmd_list.index(CMD_ID) + 1):
+    elif user_cmd in CMD_ID or user_cmd == str(cmd_list.index(CMD_ID[0]) + 1):
         get_by_id()
-    elif user_cmd == CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT) + 1):
+    elif user_cmd in CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT[0]) + 1):
         user_quit()
     else:
         print(colourise('Sorry, I don\'t recognise that command.'))

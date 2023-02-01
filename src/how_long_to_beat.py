@@ -185,7 +185,7 @@ def search_name():
 
 def get_by_id():
     global colour_prefix
-    colour_prefix = colours.YELLOW
+    colour_prefix = colours.MAGENTA
 
     # TODO: Add support for Steam ID too
     game_id = input(colourise('Enter HLTB game ID...')).strip()
@@ -231,7 +231,10 @@ def get_by_id():
     main()
 
 def user_quit():
-    print('Goodbye! :)')
+    global colour_prefix
+    colour_prefix = colours.YELLOW
+
+    print(colourise('Goodbye! :)'))
     sys.exit()
 
 if __name__ == '__main__':

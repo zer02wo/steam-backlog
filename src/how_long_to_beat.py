@@ -6,6 +6,7 @@ import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
+# Global URL constants
 BASE_URL = 'https://howlongtobeat.com/'
 ID_URL = BASE_URL + 'game/'
 SEARCH_URL = BASE_URL + 'api/search'
@@ -25,6 +26,7 @@ colours.RESET = '\u001b[0m'
 COLOUR_SUFFIX = colours.RESET
 global colour_prefix
 
+# Main command branching/user input
 def main():
     global colour_prefix
     colour_prefix = colours.GREEN
@@ -40,6 +42,7 @@ def main():
         CMD_QUIT,
     ]
 
+    # Output list of possible commands/IDs
     input_str = 'Please enter your desired command/number:'
 
     for i, cmd in enumerate(cmd_list, start=1):
@@ -58,9 +61,11 @@ def main():
         print(colourise('Sorry, I don\'t recognise that command.'))
         main()
 
+# Prefix string with ANSI colour code and suffix with reset code
 def colourise(string: str) -> str:
     return colour_prefix + string + COLOUR_SUFFIX + '\n'
 
+# Provide HTTP headers to make requests
 def get_http_headers(isJson: bool) -> dict:
     base_headers = {
         'origin': BASE_URL,
@@ -73,6 +78,7 @@ def get_http_headers(isJson: bool) -> dict:
 
     return base_headers
 
+# Handle HTTP errors and output to the console
 def handle_http_error(e: HTTPError):
     global colour_prefix
     colour_prefix = colours.RED
@@ -87,6 +93,7 @@ def handle_http_error(e: HTTPError):
 
     print(colourise(err_str))
 
+# Format seconds to hours rounded to nearest .5
 def format_half_hours(seconds: int) -> float | str:
     if not seconds:
         return 'No Data'
@@ -95,6 +102,7 @@ def format_half_hours(seconds: int) -> float | str:
 
     return round(hours * 2) / 2
 
+# Output game completion data from search term
 def search_name():
     global colour_prefix
     colour_prefix = colours.BLUE
@@ -183,6 +191,7 @@ def search_name():
 
     main()
 
+# Output game completion data from identifier
 def get_by_id():
     global colour_prefix
     colour_prefix = colours.MAGENTA
@@ -230,6 +239,7 @@ def get_by_id():
 
     main()
 
+# Quit script from user command
 def user_quit():
     global colour_prefix
     colour_prefix = colours.YELLOW

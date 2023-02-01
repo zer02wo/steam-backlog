@@ -184,11 +184,14 @@ def search_name():
     main()
 
 def get_by_id():
+    global colour_prefix
+    colour_prefix = colours.YELLOW
+
     # TODO: Add support for Steam ID too
-    game_id = input('Enter HLTB game ID...\n').strip()
+    game_id = input(colourise('Enter HLTB game ID...')).strip()
 
     if not game_id.isdigit():
-        print('Invalid ID. Must be an integer.')
+        print(colourise('Invalid ID. Must be an integer.'))
         get_by_id()
 
     # Set required request headers
@@ -204,11 +207,12 @@ def get_by_id():
         response.raise_for_status()
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
+        output = ''
 
         # Get game name from HTML
         game_name_selector = 'div[class^="GameHeader_profile_header"]'
         game_name = soup.select_one(game_name_selector + '>' + game_name_selector).text.strip()
-        print('Game completion times for {0}:'.format(game_name))
+        output += 'Game completion times for {0}:\n'.format(game_name)
 
         # Get game completion type and duration
         for time_type in soup.select('li[class^="GameStats"] > h4'):
@@ -218,7 +222,9 @@ def get_by_id():
             if time_amount == '--':
                 time_amount = 'No Data'
 
-            print('\t{0} - {1}'.format(time_type.text, time_amount))
+            output += '\t{0} - {1}\n'.format(time_type.text, time_amount)
+
+        print(colourise(output))
     except HTTPError as e:
         handle_http_error(e)
 

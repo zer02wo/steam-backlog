@@ -107,15 +107,14 @@ def format_half_hours(seconds: int) -> float | str:
 
     return round(hours * 2) / 2
 
-# Output game completion data from search term
-def search_name():
-    global colour_prefix
-    colour_prefix = colours.BLUE
+# Search API for game by term and return entire game data JSON
+def api_search(search_str: str) -> dict:
+    search_terms = search_str.split(' ')
 
     # Build search JSON payload
     search_payload = {
         'searchType': 'games',
-        'searchTerms': [],
+        'searchTerms': search_terms,
         'searchPage': 1,
         'size': 1,
         'searchOptions': {
@@ -148,9 +147,6 @@ def search_name():
         },
     }
 
-    search_term = input(colourise('Enter game name or search phrase...')).strip().lower().split(' ')
-    search_payload['searchTerms'] = search_term
-
     # Set required request headers
     search_headers = get_http_headers(True)
 
@@ -169,30 +165,39 @@ def search_name():
             print(colourise('No matches returned for this query. Try to match the game name.'))
             search_name()
 
-        data = data[0]
-
-        game_name = data['game_name']
-        story_duration = format_half_hours(data['comp_main'])
-        sides_duration = format_half_hours(data['comp_plus'])
-        compl_duration = format_half_hours(data['comp_100'])
-        style_duration = format_half_hours(data['comp_all'])
-
-        output = '''Most relevant result for {0}:
-            Main Story - {1}
-            Main + Sides - {2}
-            Completionist - {3}
-            All Styles - {4}
-        '''.format(
-            game_name,
-            story_duration,
-            sides_duration,
-            compl_duration,
-            style_duration
-        )
-
-        print(colourise(output))
+        return data[0]
     except HTTPError as e:
         handle_http_error(e)
+
+# Output game completion data from search term
+def search_name():
+    global colour_prefix
+    colour_prefix = colours.BLUE
+
+    search_term = input(colourise('Enter game name or search phrase...')).strip().lower()
+
+    data = api_search(search_term)
+
+    game_name = data['game_name']
+    story_duration = format_half_hours(data['comp_main'])
+    sides_duration = format_half_hours(data['comp_plus'])
+    compl_duration = format_half_hours(data['comp_100'])
+    style_duration = format_half_hours(data['comp_all'])
+
+    output = '''Most relevant result for {0}:
+        Main Story - {1}
+        Main + Sides - {2}
+        Completionist - {3}
+        All Styles - {4}
+    '''.format(
+        game_name,
+        story_duration,
+        sides_duration,
+        compl_duration,
+        style_duration
+    )
+
+    print(colourise(output))
 
     main()
 

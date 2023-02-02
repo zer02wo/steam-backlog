@@ -31,12 +31,15 @@ def main():
     global colour_prefix
     colour_prefix = colours.GREEN
 
+    # Define allowed command terms
+    CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
     CMD_ID = ['ID', 'DETAIL']
     CMD_QUIT = ['QUIT', 'Q']
 
     # TODO: Add support for Steam library & CSV commands
     cmd_list = [
+        CMD_BACKLOG[0],
         CMD_SEARCH[0],
         CMD_ID[0],
         CMD_QUIT[0],
@@ -51,7 +54,9 @@ def main():
     user_cmd = input(colourise(input_str)).strip().upper()
 
     # Perform user's desired command
-    if user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
+    if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
+        print('TODO: Steam backlog support')
+    elif user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
         search_name()
     elif user_cmd in CMD_ID or user_cmd == str(cmd_list.index(CMD_ID[0]) + 1):
         get_by_id()

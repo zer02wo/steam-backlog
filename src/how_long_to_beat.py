@@ -55,7 +55,7 @@ def main():
 
     # Perform user's desired command
     if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
-        print('TODO: Steam backlog support')
+        steam_library()
     elif user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
         search_name()
     elif user_cmd in CMD_ID or user_cmd == str(cmd_list.index(CMD_ID[0]) + 1):
@@ -168,6 +168,13 @@ def api_search(search_str: str) -> dict:
         return data[0]
     except HTTPError as e:
         handle_http_error(e)
+
+# Output game completion data from Steam library
+def steam_library():
+    global colour_prefix
+    colour_prefix = colours.CYAN
+
+    print(colourise('TODO: Steam backlog'))
 
 # Output game completion data from search term
 def search_name():

@@ -11,6 +11,12 @@ BASE_URL = 'https://howlongtobeat.com/'
 ID_URL = BASE_URL + 'game/'
 SEARCH_URL = BASE_URL + 'api/search'
 
+# Global Steam data variables
+global steam_api_key
+steam_api_key = ''
+global steam_user_id
+steam_user_id = ''
+
 # Define simple namespace for ANSI colour prefixes
 colours = SimpleNamespace()
 colours.GREY = '\033[1;30m'
@@ -174,7 +180,18 @@ def steam_library():
     global colour_prefix
     colour_prefix = colours.CYAN
 
-    print(colourise('TODO: Steam backlog'))
+    global steam_api_key
+    if not steam_api_key:
+        steam_api_key = input(colourise('Please enter your Steam API key...'))
+
+    global steam_user_id
+    if not steam_user_id:
+        steam_user_id = input(colourise('Please enter your Steam account ID...'))
+
+    # TODO: Make a request to here with the user API key & ID:
+        # http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=440&key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&steamid=76561197972495328
+    print(colourise('API key: ' + steam_api_key))
+    print(colourise('Steam ID: ' + steam_user_id))
 
 # Output game completion data from search term
 def search_name():

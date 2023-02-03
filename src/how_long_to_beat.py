@@ -7,9 +7,9 @@ from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
 # Global URL constants
-BASE_URL = 'https://howlongtobeat.com/'
-ID_URL = BASE_URL + 'game/'
-SEARCH_URL = BASE_URL + 'api/search'
+HLTB_BASE_URL = 'https://howlongtobeat.com/'
+HLTB_ID_URL = HLTB_BASE_URL + 'game/'
+HLTB_SEARCH_URL = HLTB_BASE_URL + 'api/search'
 
 # Global Steam data variables
 global steam_api_key
@@ -79,8 +79,8 @@ def colourise(string: str) -> str:
 # Provide HTTP headers to make requests
 def get_http_headers(isJson: bool) -> dict:
     base_headers = {
-        'origin': BASE_URL,
-        'referer': BASE_URL,
+        'origin': HLTB_BASE_URL,
+        'referer': HLTB_BASE_URL,
         'user-agent': 'steam backlog python script',
     }
 
@@ -157,7 +157,7 @@ def api_search(search_str: str) -> dict:
     search_headers = get_http_headers(True)
 
     response = requests.post(
-        url = SEARCH_URL,
+        url = HLTB_SEARCH_URL,
         data = json.dumps(search_payload),
         headers = search_headers,
     )
@@ -241,7 +241,7 @@ def get_by_id():
     id_headers = get_http_headers(False)
 
     response = requests.get(
-        url = '{path}{id}'.format(path = ID_URL, id = game_id),
+        url = '{path}{id}'.format(path = HLTB_ID_URL, id = game_id),
         headers = id_headers,
     )
 

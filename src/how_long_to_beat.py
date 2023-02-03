@@ -12,8 +12,8 @@ HLTB_ID_URL = HLTB_BASE_URL + 'game/'
 HLTB_SEARCH_URL = HLTB_BASE_URL + 'api/search'
 
 # Global Steam URL constants
-STEAM_BASE_URL = 'http://api.steampowered.com/'
-STEAM_LIB_URL = 'ISteamUserStats/GetUserStatsForGame/v0002/'
+STEAM_BASE_URL = 'https://api.steampowered.com/'
+STEAM_LIB_URL = STEAM_BASE_URL + 'IPlayerService/GetOwnedGames/v0001/'
 
 # Global Steam data variables
 global steam_api_key

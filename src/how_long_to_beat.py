@@ -192,10 +192,38 @@ def steam_library():
     if not steam_user_id:
         steam_user_id = input(colourise('Please enter your Steam account ID...'))
 
-    # TODO: Make a request to here with the user API key & ID:
-        # http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=440&key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&steamid=76561197972495328
-    print(colourise('API key: ' + steam_api_key))
-    print(colourise('Steam ID: ' + steam_user_id))
+    user_library_url = '{base}?key={key}&steamid={id}'.format(
+        base = STEAM_LIB_URL,
+        key = steam_api_key,
+        id = steam_user_id,
+    )
+    library_headers = get_http_headers(True)
+
+    response = requests.get(
+        url = user_library_url,
+        headers = library_headers,
+    )
+
+    try:
+        # Parse request response
+        response.raise_for_status()
+        data = json.loads(response.text)['response']
+
+        if not data:
+            print(colourise('No data returned from Steam. Please check the visibility of your user profile.'))
+            steam_api_key = ''
+            steam_user_id = ''
+            steam_library()
+
+        total_games = str(data['game_count'])
+        print(colourise('Your have {total} games in your library!'.format(count = total_games)))
+
+        if total_games:
+            # TODO: Calculate the total games playtime
+            print(data['games'])
+
+    except HTTPError as e:
+        handle_http_error(e)
 
 # Output game completion data from search term
 def search_name():

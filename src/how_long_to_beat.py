@@ -6,10 +6,14 @@ import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
-# Global URL constants
+# Global HLTB URL constants
 HLTB_BASE_URL = 'https://howlongtobeat.com/'
 HLTB_ID_URL = HLTB_BASE_URL + 'game/'
 HLTB_SEARCH_URL = HLTB_BASE_URL + 'api/search'
+
+# Global Steam URL constants
+STEAM_BASE_URL = 'http://api.steampowered.com/'
+STEAM_LIB_URL = 'ISteamUserStats/GetUserStatsForGame/v0002/'
 
 # Global Steam data variables
 global steam_api_key

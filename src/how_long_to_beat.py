@@ -216,11 +216,21 @@ def steam_library():
             steam_library()
 
         total_games = str(data['game_count'])
-        print(colourise('Your have {total} games in your library!'.format(count = total_games)))
+        print(colourise('Your have {num} games in your library!'.format(num = total_games)))
 
         if total_games:
-            # TODO: Calculate the total games playtime
-            print(data['games'])
+            games_list = data['games']
+            backlog_time = 0
+
+            for game in games_list:
+                # TODO: Look up game details by Steam ID: https://store.steampowered.com/api/appdetails?appids=<APP_ID_HERE>
+                game_id = game['appid']
+                print(str(game_id))
+                # TODO: Use HLTB API search to output estimated time to complete by game name
+                    # TODO: Replace playtime below with result from HLTB response
+                backlog_time += game['playtime_forever']
+
+            print(str(backlog_time))
 
     except HTTPError as e:
         handle_http_error(e)
@@ -250,7 +260,7 @@ def search_name():
         story_duration,
         sides_duration,
         compl_duration,
-        style_duration
+        style_duration,
     )
 
     print(colourise(output))

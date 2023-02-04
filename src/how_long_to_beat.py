@@ -134,7 +134,7 @@ def strip_trademark_symbols(string: str) -> str:
 
     return string
 
-# Remove 'Edition' from string if final word, improves compatibility with HLTB:
+# Remove 'Edition' from string if final word, improves compatibility with HLTB
 def strip_trailing_edition(string: str) -> str:
     words = string.split(' ')
     # 🔫🤠💠
@@ -145,6 +145,15 @@ def strip_trailing_edition(string: str) -> str:
 
     # Return string excluding last word of 'Edition'
     return string.rsplit(' ', 1)[0]
+
+# Remove apostrophes from string, improves compatibility with HLTB
+def strip_apostrophes(string: str) -> str:
+    apostrophe_symbols = ['\'', '’']
+
+    for apostrophe in apostrophe_symbols:
+        string = string.replace(apostrophe, '')
+
+    return string
 
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:

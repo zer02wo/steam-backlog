@@ -407,9 +407,10 @@ def steam_library():
                     These are likely utility, productivity or art apps like Wallpaper Engine, Aesprite or Blender.'''.format(apps = app_count)
                 )
             )
-
     except HTTPError as e:
         handle_http_error(e)
+
+    main()
 
 # Output game completion data from search term
 def search_name():

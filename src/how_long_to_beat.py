@@ -137,9 +137,10 @@ def strip_trademark_symbols(string: str) -> str:
 # Remove 'Edition' from string if final word, improves compatibility with HLTB:
 def strip_trailing_edition(string: str) -> str:
     words = str.split(' ')
-    final_word = words[-1]
+    # 🔫🤠💠
+    the_last_word = words[-1]
 
-    if not final_word.upper() == 'EDITION':
+    if not the_last_word.upper() == 'EDITION':
         return str
 
     # Return string excluding last word of 'Edition'

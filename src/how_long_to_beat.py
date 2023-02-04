@@ -134,6 +134,17 @@ def strip_trademark_symbols(string: str) -> str:
 
     return string
 
+# Remove 'Edition' from string if final word, improves compatibility with HLTB:
+def strip_trailing_edition(string: str) -> str:
+    words = str.split(' ')
+    final_word = words[-1]
+
+    if not final_word.upper() == 'EDITION':
+        return str
+
+    # Return string excluding last word of 'Edition'
+    return str.rsplit(' ', 1)[0]
+
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:
     search_terms = search_str.split(' ')
@@ -221,8 +232,10 @@ def app_id_lookup(app_id: int) -> str:
             return ERR_STEAM_TYPE_APP
 
         name = data[str(app_id)]['data']['name']
+        name = strip_trademark_symbols(name)
+        name = strip_trailing_edition(name)
 
-        return strip_trademark_symbols(name)
+        return name
     except HTTPError as e:
         handle_http_error(e)
 

@@ -155,6 +155,13 @@ def strip_apostrophes(string: str) -> str:
 
     return string
 
+# Append 'hours' text to end if input is float
+def append_hours(prefix: float|str) -> str:
+    if type(prefix) == str:
+        return prefix
+
+    return '{pre} hours'.format(pre = prefix)
+
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:
     search_terms = search_str.split(' ')
@@ -337,31 +344,31 @@ def steam_library():
                 style_dur_total += style_duration
 
             output = '''{0}:
-                Main Story - {1} hours
-                Main + Sides - {2} hours
-                Completionist - {3} hours
-                All Styles - {4} hours
+                Main Story - {1}
+                Main + Sides - {2}
+                Completionist - {3}
+                All Styles - {4}
             '''.format(
                 game_name,
-                story_duration,
-                sides_duration,
-                compl_duration,
-                style_duration,
+                append_hours(story_duration),
+                append_hours(sides_duration),
+                append_hours(compl_duration),
+                append_hours(style_duration),
             )
 
             print(colourise(output))
 
         # TODO: In a future iteration will add the ability to subtract current playtime, using the flags mentioned in other document
         total_output = '''Total time to get through Steam library backlog:
-            Main Story - {0} hours
-            Main + Sides - {1} hours
-            Completionist - {2} hours
-            All Styles - {3} hours
+            Main Story - {0}
+            Main + Sides - {1}
+            Completionist - {2}
+            All Styles - {3}
         '''.format(
-            story_dur_total,
-            sides_dur_total,
-            compl_dur_total,
-            style_dur_total,
+            append_hours(story_dur_total),
+            append_hours(sides_dur_total),
+            append_hours(compl_dur_total),
+            append_hours(style_dur_total),
         )
         print(colourise(total_output))
 
@@ -405,16 +412,16 @@ def search_name():
     style_duration = format_half_hours(data['comp_all'])
 
     output = '''Most relevant result for {0}:
-        Main Story - {1} hours
-        Main + Sides - {2} hours
-        Completionist - {3} hours
-        All Styles - {4} hours
+        Main Story - {1}
+        Main + Sides - {2}
+        Completionist - {3}
+        All Styles - {4}
     '''.format(
         game_name,
-        story_duration,
-        sides_duration,
-        compl_duration,
-        style_duration,
+        append_hours(story_duration),
+        append_hours(sides_duration),
+        append_hours(compl_duration),
+        append_hours(style_duration),
     )
 
     print(colourise(output))

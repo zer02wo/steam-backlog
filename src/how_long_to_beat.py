@@ -299,6 +299,7 @@ def steam_library():
         print(colourise('Your have {num} games in your library!'.format(num = total_games)))
 
         games_list = data['games']
+        total_playtime = 0
         story_dur_total = 0
         sides_dur_total = 0
         compl_dur_total = 0
@@ -308,6 +309,7 @@ def steam_library():
 
         for game in games_list:
             game_id = game['appid']
+            game_playtime = game['playtime_forever']
             game_name = app_id_lookup(game_id)
 
             # Error getting game name from Steam lookup
@@ -319,6 +321,8 @@ def steam_library():
             if game_name == ERR_STEAM_TYPE_APP:
                 app_count += 1
                 continue
+
+            total_playtime += game_playtime
 
             # Get completion data from HLTB API using compatibile name
             name_searchable = strip_trailing_edition(game_name)
@@ -343,13 +347,14 @@ def steam_library():
             if type(style_duration) == float:
                 style_dur_total += style_duration
 
-            output = '''{0}:
-                Main Story - {1}
-                Main + Sides - {2}
-                Completionist - {3}
-                All Styles - {4}
+            output = '''{0}: (Currently played {1} hours)
+                Main Story - {2}
+                Main + Sides - {3}
+                Completionist - {4}
+                All Styles - {5}
             '''.format(
                 game_name,
+                format_half_hours(int(game_playtime * 60)),
                 append_hours(story_duration),
                 append_hours(sides_duration),
                 append_hours(compl_duration),
@@ -371,6 +376,14 @@ def steam_library():
             append_hours(style_dur_total),
         )
         print(colourise(total_output))
+
+        print(
+            colourise(
+                'You have played games on Steam for a total of {hours} hours'.format(
+                    hours = format_half_hours(int(total_playtime * 60))
+                )
+            )
+        )
 
         if error_count:
             print(

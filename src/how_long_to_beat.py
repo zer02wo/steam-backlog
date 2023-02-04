@@ -202,7 +202,10 @@ def app_id_lookup(app_id: int) -> str:
         data = json.loads(response.text)
 
         if not data or not data[str(app_id)]['success']:
-            return str(app_id)
+            return ERR_STEAM_GAME_REMOVED
+
+        if not data[str(app_id)]['data']['type'] == 'game':
+            return ERR_STEAM_TYPE_APP
 
         return data[str(app_id)]['data']['name']
     except HTTPError as e:
@@ -251,14 +254,20 @@ def steam_library():
             games_list = data['games']
             backlog_time = 0
             error_count = 0
+            app_count = 0
 
             for game in games_list:
                 game_id = game['appid']
                 game_name = app_id_lookup(game_id)
 
                 # Error getting game name from Steam lookup
-                if game_name == str(game_id):
+                if game_name == ERR_STEAM_GAME_REMOVED:
                     error_count += 1
+                    continue
+
+                # Game is a different type of application (e.g. art program like Aesprite or Blender)
+                if game_name == ERR_STEAM_TYPE_APP:
+                    app_count += 1
                     continue
 
                 print(colourise(game_name))
@@ -271,8 +280,16 @@ def steam_library():
             if error_count:
                 print(
                     colourise(
-                        '''An error occured when looking up {num} of your games and has been ommitted from the list.
-                        This is likely because it has been removed from the Steam store.'''.format(num = error_count)
+                        '''An error occured when looking up {errors} of your games and have been ommitted from the list.
+                        This is likely because it has been removed from the Steam store.'''.format(errors = error_count)
+                    )
+                )
+
+            if app_count:
+                print(
+                    colourise(
+                        '''{apps} games in your library are other types of applications and have been ommitted from the list.
+                        These are likely utility, productivity or art apps like Wallpaper Engine, Aesprite or Blender.'''.format(apps = app_count)
                     )
                 )
 

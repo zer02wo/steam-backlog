@@ -125,6 +125,12 @@ def format_half_hours(seconds: int) -> float | str:
 
     return round(hours * 2) / 2
 
+# Format minutes to hours to nearest .1
+def format_dec_hours(minutes: int) -> float:
+    hours = minutes / 60
+
+    return round(hours, 1)
+
 # Remove trademark symbols from string, for game names from Steam
 def strip_trademark_symbols(string: str) -> str:
     tm_symbols = ['\u2122', '\u00A9', '\u00AE', '\u2117']
@@ -347,14 +353,14 @@ def steam_library():
             if type(style_duration) == float:
                 style_dur_total += style_duration
 
-            output = '''{0}: (Currently played {1} hours)
+            output = '''{0}: (Currently played {1})
                 Main Story - {2}
                 Main + Sides - {3}
                 Completionist - {4}
                 All Styles - {5}
             '''.format(
                 game_name,
-                format_half_hours(int(game_playtime * 60)),
+                append_hours(format_dec_hours(game_playtime)),
                 append_hours(story_duration),
                 append_hours(sides_duration),
                 append_hours(compl_duration),
@@ -379,8 +385,8 @@ def steam_library():
 
         print(
             colourise(
-                'You have played games on Steam for a total of {hours} hours'.format(
-                    hours = format_half_hours(int(total_playtime * 60))
+                'You have played games on Steam for a total of {hours}'.format(
+                    hours = append_hours(format_dec_hours(total_playtime))
                 )
             )
         )

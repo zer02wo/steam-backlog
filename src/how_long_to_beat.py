@@ -18,6 +18,10 @@ STEAM_LIB_URL = STEAM_BASE_URL + 'IPlayerService/GetOwnedGames/v0001/'
 STEAM_STORE_BASE_URL = 'https://store.steampowered.com/'
 STEAM_APP_LOOKUP_URL = STEAM_STORE_BASE_URL + 'api/appdetails'
 
+# Global Steam store custom error constants
+ERR_STEAM_GAME_REMOVED = 'ERR_STEAM_GAME_REMOVED'
+ERR_STEAM_TYPE_APP = 'ERR_STEAM_TYPE_APP'
+
 # Global Steam data variables
 global steam_api_key
 steam_api_key = ''

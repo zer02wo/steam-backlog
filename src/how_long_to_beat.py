@@ -136,15 +136,15 @@ def strip_trademark_symbols(string: str) -> str:
 
 # Remove 'Edition' from string if final word, improves compatibility with HLTB:
 def strip_trailing_edition(string: str) -> str:
-    words = str.split(' ')
+    words = string.split(' ')
     # 🔫🤠💠
     the_last_word = words[-1]
 
     if not the_last_word.upper() == 'EDITION':
-        return str
+        return string
 
     # Return string excluding last word of 'Edition'
-    return str.rsplit(' ', 1)[0]
+    return string.rsplit(' ', 1)[0]
 
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:

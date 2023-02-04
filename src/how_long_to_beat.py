@@ -18,7 +18,8 @@ STEAM_LIB_URL = STEAM_BASE_URL + 'IPlayerService/GetOwnedGames/v0001/'
 STEAM_STORE_BASE_URL = 'https://store.steampowered.com/'
 STEAM_APP_LOOKUP_URL = STEAM_STORE_BASE_URL + 'api/appdetails'
 
-# Global Steam store custom error constants
+# Global custom error constants
+ERR_HLTB_NO_DATA = 'ERR_HLTB_NO_DATA'
 ERR_STEAM_GAME_REMOVED = 'ERR_STEAM_GAME_REMOVED'
 ERR_STEAM_TYPE_APP = 'ERR_STEAM_TYPE_APP'
 
@@ -188,8 +189,7 @@ def api_search(search_str: str) -> dict:
         data = json.loads(response.text)['data']
 
         if not data:
-            print(colourise('No matches returned for this query. Try to match the game name.'))
-            search_name()
+            return ERR_HLTB_NO_DATA
 
         return data[0]
     except HTTPError as e:
@@ -296,7 +296,8 @@ def steam_library():
                 print(
                     colourise(
                         '''An error occured when looking up {errors} of your games and have been ommitted from the list.
-                        This is likely because it has been removed from the Steam store.'''.format(errors = error_count)
+                        This is likely because it has been removed from the Steam store.
+                        Or it could not be found by HowLongToBeat's search.'''.format(errors = error_count)
                     )
                 )
 
@@ -319,6 +320,10 @@ def search_name():
     search_term = input(colourise('Enter game name or search phrase...')).strip().lower()
 
     data = api_search(search_term)
+
+    if data == ERR_HLTB_NO_DATA:
+        print(colourise('No matches returned for this query. Try to match the game name.'))
+        search_name()
 
     game_name = data['game_name']
     story_duration = format_half_hours(data['comp_main'])

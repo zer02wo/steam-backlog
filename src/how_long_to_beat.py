@@ -243,7 +243,6 @@ def app_id_lookup(app_id: int) -> str:
 
         name = data[str(app_id)]['data']['name']
         name = strip_trademark_symbols(name)
-        name = strip_trailing_edition(name)
 
         return name
     except HTTPError as e:
@@ -286,64 +285,67 @@ def steam_library():
             steam_library()
 
         total_games = str(data['game_count'])
+
+        if not total_games:
+            print(colourise('You have no games in your library... :('))
+
         print(colourise('Your have {num} games in your library!'.format(num = total_games)))
 
-        if total_games:
-            games_list = data['games']
-            backlog_time = 0
-            error_count = 0
-            app_count = 0
+        games_list = data['games']
+        backlog_time = 0
+        error_count = 0
+        app_count = 0
 
-            for game in games_list:
-                game_id = game['appid']
-                game_name = app_id_lookup(game_id)
+        for game in games_list:
+            game_id = game['appid']
+            game_name = app_id_lookup(game_id)
 
-                # Error getting game name from Steam lookup
-                if game_name == ERR_STEAM_GAME_REMOVED:
-                    error_count += 1
-                    continue
+            # Error getting game name from Steam lookup
+            if game_name == ERR_STEAM_GAME_REMOVED:
+                error_count += 1
+                continue
 
-                # Game is a different type of application (e.g. art program like Aesprite or Blender)
-                if game_name == ERR_STEAM_TYPE_APP:
-                    app_count += 1
-                    continue
+            # Game is a different type of application (e.g. art program like Aesprite or Blender)
+            if game_name == ERR_STEAM_TYPE_APP:
+                app_count += 1
+                continue
 
-                # Get completion data from HLTB API using compatibile name
-                name_searchable = strip_trailing_edition(game_name)
-                name_searchable = strip_apostrophes(name_searchable)
-                data = api_search(name_searchable)
+            # Get completion data from HLTB API using compatibile name
+            name_searchable = strip_trailing_edition(game_name)
+            name_searchable = strip_apostrophes(name_searchable)
+            data = api_search(name_searchable)
 
-                if data == ERR_HLTB_NO_DATA:
-                    error_count += 1
-                    continue
+            if data == ERR_HLTB_NO_DATA:
+                error_count += 1
+                continue
 
-                # TODO: Parse data for output/totaling
-                print(game_name)
-                print(data)
-                print('\n')
+            # TODO: Parse data for output/totaling
+            print(game_name)
+            print(data)
+            print('\n')
 
-                # TODO: Use HLTB API search to output estimated time to complete by game name
-                    # TODO: Replace playtime below with result from HLTB response
-                backlog_time += game['playtime_forever']
+            # TODO: Use HLTB API search to output estimated time to complete by game name
+                # TODO: Replace playtime below with result from HLTB response
+            backlog_time += game['playtime_forever']
 
-            print(str(backlog_time))
+        print(str(backlog_time))
 
-            if error_count:
-                print(
-                    colourise(
-                        '''An error occured when looking up {errors} of your games and have been ommitted from the list.
-                        This is likely because it has been removed from the Steam store.
-                        Or it could not be found by HowLongToBeat's search.'''.format(errors = error_count)
-                    )
+        if error_count:
+            print(
+                colourise(
+                    '''An error occured when looking up {errors} of your games and have been ommitted from the list.
+                    This is likely because it has been removed from the Steam store.
+                    Or it could not be found by HowLongToBeat's search.'''.format(errors = error_count)
                 )
+            )
 
-            if app_count:
-                print(
-                    colourise(
-                        '''{apps} games in your library are other types of applications and have been ommitted from the list.
-                        These are likely utility, productivity or art apps like Wallpaper Engine, Aesprite or Blender.'''.format(apps = app_count)
-                    )
+        if app_count:
+            print(
+                colourise(
+                    '''{apps} games in your library are other types of applications and have been ommitted from the list.
+                    These are likely utility, productivity or art apps like Wallpaper Engine, Aesprite or Blender.'''.format(apps = app_count)
                 )
+            )
 
     except HTTPError as e:
         handle_http_error(e)

@@ -201,8 +201,6 @@ def app_id_lookup(app_id: int) -> str:
         response.raise_for_status()
         data = json.loads(response.text)
 
-        print(data)
-
         if not data or not data[str(app_id)]['success']:
             return str(app_id)
 
@@ -252,16 +250,31 @@ def steam_library():
         if total_games:
             games_list = data['games']
             backlog_time = 0
+            error_count = 0
 
             for game in games_list:
-                # TODO: Look up game details by Steam ID: https://store.steampowered.com/api/appdetails?appids=<APP_ID_HERE>
                 game_id = game['appid']
-                print(str(game_id))
+                game_name = app_id_lookup(game_id)
+
+                # Error getting game name from Steam lookup
+                if game_name == str(game_id):
+                    error_count += 1
+                    continue
+
+                print(colourise(game_name))
                 # TODO: Use HLTB API search to output estimated time to complete by game name
                     # TODO: Replace playtime below with result from HLTB response
                 backlog_time += game['playtime_forever']
 
             print(str(backlog_time))
+
+            if error_count:
+                print(
+                    colourise(
+                        '''An error occured when looking up {num} of your games and has been ommitted from the list.
+                        This is likely because it has been removed from the Steam store.'''.format(num = error_count)
+                    )
+                )
 
     except HTTPError as e:
         handle_http_error(e)

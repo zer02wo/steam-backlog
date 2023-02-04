@@ -292,7 +292,10 @@ def steam_library():
         print(colourise('Your have {num} games in your library!'.format(num = total_games)))
 
         games_list = data['games']
-        backlog_time = 0
+        story_dur_total = 0
+        sides_dur_total = 0
+        compl_dur_total = 0
+        style_dur_total = 0
         error_count = 0
         app_count = 0
 
@@ -324,6 +327,15 @@ def steam_library():
             compl_duration = format_half_hours(data['comp_100'])
             style_duration = format_half_hours(data['comp_all'])
 
+            if type(story_duration) == float:
+                story_dur_total += story_duration
+            if type(sides_duration) == float:
+                sides_dur_total += sides_duration
+            if type(compl_duration) == float:
+                compl_dur_total += compl_duration
+            if type(style_duration) == float:
+                style_dur_total += style_duration
+
             output = '''{0}:
                 Main Story - {1} hours
                 Main + Sides - {2} hours
@@ -339,11 +351,19 @@ def steam_library():
 
             print(colourise(output))
 
-            # TODO: Use HLTB API search to output estimated time to complete by game name
-                # TODO: Replace playtime below with result from HLTB response
-            backlog_time += game['playtime_forever']
-
-        print(str(backlog_time))
+        # TODO: In a future iteration will add the ability to subtract current playtime, using the flags mentioned in other document
+        total_output = '''Total time to get through Steam library backlog:
+            Main Story - {0} hours
+            Main + Sides - {1} hours
+            Completionist - {2} hours
+            All Styles - {3} hours
+        '''.format(
+            story_dur_total,
+            sides_dur_total,
+            compl_dur_total,
+            style_dur_total,
+        )
+        print(colourise(total_output))
 
         if error_count:
             print(

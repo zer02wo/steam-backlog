@@ -55,7 +55,6 @@ def main():
     CMD_ID = ['ID', 'DETAIL']
     CMD_QUIT = ['QUIT', 'Q']
 
-    # TODO: Add support for Steam library & CSV commands
     cmd_list = [
         CMD_BACKLOG[0],
         CMD_SEARCH[0],

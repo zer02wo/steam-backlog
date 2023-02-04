@@ -14,7 +14,6 @@ Uses data from:
 - Review estimates for video games by name or by ID.
   - Don't need *all* that data? Just see how long it'll take you to play that one game you've been eyeing up!
 - Lightweight command-line interface, perfect for working with data.
-  - Support for exporting data to CSV.
 - Ability to get estimates for different types of completion states.
   - Tailor to your own playstyle. Speedrunner or achievement hunter.
 - Randomly select a game from your list to pick as your next one to play.

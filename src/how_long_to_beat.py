@@ -308,7 +308,20 @@ def steam_library():
                     app_count += 1
                     continue
 
-                print(colourise(game_name))
+                # Get completion data from HLTB API using compatibile name
+                name_searchable = strip_trailing_edition(game_name)
+                name_searchable = strip_apostrophes(name_searchable)
+                data = api_search(name_searchable)
+
+                if data == ERR_HLTB_NO_DATA:
+                    error_count += 1
+                    continue
+
+                # TODO: Parse data for output/totaling
+                print(game_name)
+                print(data)
+                print('\n')
+
                 # TODO: Use HLTB API search to output estimated time to complete by game name
                     # TODO: Replace playtime below with result from HLTB response
                 backlog_time += game['playtime_forever']

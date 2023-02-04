@@ -15,6 +15,9 @@ HLTB_SEARCH_URL = HLTB_BASE_URL + 'api/search'
 STEAM_BASE_URL = 'https://api.steampowered.com/'
 STEAM_LIB_URL = STEAM_BASE_URL + 'IPlayerService/GetOwnedGames/v0001/'
 
+STEAM_STORE_BASE_URL = 'https://store.steampowered.com/'
+STEAM_APP_LOOKUP_URL = STEAM_STORE_BASE_URL + 'api/appdetails'
+
 # Global Steam data variables
 global steam_api_key
 steam_api_key = ''
@@ -176,6 +179,34 @@ def api_search(search_str: str) -> dict:
             search_name()
 
         return data[0]
+    except HTTPError as e:
+        handle_http_error(e)
+
+# Lookup game name from Steam app ID
+def app_id_lookup(app_id: int) -> str:
+
+    lookup_url = '{url}?appids={id}&filters=basic'.format(
+        url = STEAM_APP_LOOKUP_URL,
+        id = app_id,
+    )
+    lookup_headers = get_http_headers(True)
+
+    response = requests.get(
+        url = lookup_url,
+        headers = lookup_headers,
+    )
+
+    try:
+        # Parse request response
+        response.raise_for_status()
+        data = json.loads(response.text)
+
+        print(data)
+
+        if not data or not data[str(app_id)]['success']:
+            return str(app_id)
+
+        return data[str(app_id)]['data']['name']
     except HTTPError as e:
         handle_http_error(e)
 

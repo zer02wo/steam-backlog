@@ -319,10 +319,25 @@ def steam_library():
                 error_count += 1
                 continue
 
-            # TODO: Parse data for output/totaling
-            print(game_name)
-            print(data)
-            print('\n')
+            story_duration = format_half_hours(data['comp_main'])
+            sides_duration = format_half_hours(data['comp_plus'])
+            compl_duration = format_half_hours(data['comp_100'])
+            style_duration = format_half_hours(data['comp_all'])
+
+            output = '''{0}:
+                Main Story - {1} hours
+                Main + Sides - {2} hours
+                Completionist - {3} hours
+                All Styles - {4} hours
+            '''.format(
+                game_name,
+                story_duration,
+                sides_duration,
+                compl_duration,
+                style_duration,
+            )
+
+            print(colourise(output))
 
             # TODO: Use HLTB API search to output estimated time to complete by game name
                 # TODO: Replace playtime below with result from HLTB response
@@ -370,10 +385,10 @@ def search_name():
     style_duration = format_half_hours(data['comp_all'])
 
     output = '''Most relevant result for {0}:
-        Main Story - {1}
-        Main + Sides - {2}
-        Completionist - {3}
-        All Styles - {4}
+        Main Story - {1} hours
+        Main + Sides - {2} hours
+        Completionist - {3} hours
+        All Styles - {4} hours
     '''.format(
         game_name,
         story_duration,

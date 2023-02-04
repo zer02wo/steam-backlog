@@ -49,6 +49,7 @@ def main():
     global colour_prefix
     colour_prefix = colours.GREEN
 
+    # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
     # Define allowed command terms
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
@@ -290,6 +291,7 @@ def steam_library():
         response.raise_for_status()
         data = json.loads(response.text)['response']
 
+        # TODO: Consider creating a cached version of the necessary data in an object for future use
         if not data:
             print(colourise('No data returned from Steam. Please check the visibility of your user profile.'))
             steam_api_key = ''
@@ -338,6 +340,7 @@ def steam_library():
                 error_count += 1
                 continue
 
+            # Output individual game data
             story_duration = format_half_hours(data['comp_main'])
             sides_duration = format_half_hours(data['comp_plus'])
             compl_duration = format_half_hours(data['comp_100'])
@@ -368,7 +371,7 @@ def steam_library():
 
             print(colourise(output))
 
-        # TODO: In a future iteration will add the ability to subtract current playtime, using the flags mentioned in other document
+        # Output aggregated library data
         total_output = '''Total time to get through Steam library backlog:
             Main Story - {0}
             Main + Sides - {1}
@@ -380,6 +383,7 @@ def steam_library():
             append_hours(compl_dur_total),
             append_hours(style_dur_total),
         )
+
         print(colourise(total_output))
 
         print(

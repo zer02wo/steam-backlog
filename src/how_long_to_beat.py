@@ -124,6 +124,15 @@ def format_half_hours(seconds: int) -> float | str:
 
     return round(hours * 2) / 2
 
+# Remove trademark symbols from string, for game names from Steam
+def strip_trademark_symbols(string: str) -> str:
+    tm_symbols = ['\u2122', '\u00A9', '\u00AE', '\u2117']
+
+    for symbol in tm_symbols:
+        string = string.replace(symbol, '')
+
+    return string
+
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:
     search_terms = search_str.split(' ')
@@ -211,7 +220,9 @@ def app_id_lookup(app_id: int) -> str:
         if not data[str(app_id)]['data']['type'] == 'game':
             return ERR_STEAM_TYPE_APP
 
-        return data[str(app_id)]['data']['name']
+        name = data[str(app_id)]['data']['name']
+
+        return strip_trademark_symbols(name)
     except HTTPError as e:
         handle_http_error(e)
 

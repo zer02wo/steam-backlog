@@ -53,7 +53,7 @@ def main():
     # Define allowed command terms and optional flags
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     FLAGS_BACKLOG = ['BACKLOG']
-    CMD_RECENT = ['RECENT', 'PAST', 'LATEST']
+    CMD_RECENT = ['RECENT', 'PAST', 'LATEST', 'LAST']
     FLAGS_RECENT = []
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
     FLAGS_SEARCH = []
@@ -451,20 +451,20 @@ def steam_library(is_backlog: bool =  False):
             if not game_playtime:
                 total_unplayed_games += 1
 
-            # Get completion data from HLTB API using compatibile name
+            # Get completion data from HLTB API using compatible name
             name_searchable = strip_trailing_edition(game_name)
             name_searchable = strip_apostrophes(name_searchable)
-            data = api_search(name_searchable)
+            search_data = api_search(name_searchable)
 
-            if data == ERR_HLTB_NO_DATA:
+            if search_data == ERR_HLTB_NO_DATA:
                 error_count += 1
                 continue
 
             # Output individual game data
-            story_duration = format_half_hours(data['comp_main'])
-            sides_duration = format_half_hours(data['comp_plus'])
-            compl_duration = format_half_hours(data['comp_100'])
-            style_duration = format_half_hours(data['comp_all'])
+            story_duration = format_half_hours(search_data['comp_main'])
+            sides_duration = format_half_hours(search_data['comp_plus'])
+            compl_duration = format_half_hours(search_data['comp_100'])
+            style_duration = format_half_hours(search_data['comp_all'])
 
             if type(story_duration) == float:
                 story_dur_total += story_duration
@@ -556,11 +556,52 @@ def steam_recently_played():
     )
 
     try:
-        # TODO: Parse request response
+        # Parse request response
         response.raise_for_status()
         data = json.loads(response.text)['response']
 
-        print(data)
+        if not data:
+            print(colourise('No data returned from Steam. Please check the visibility of your user profile.'))
+            steam_api_key = ''
+            steam_user_id = ''
+            main()
+
+        if not data['total_count']:
+            print(colourise('You have not played any games within the last 2 weeks... :('))
+            main()
+
+        game_data = data['games'][0]
+        game_name = game_data['name']
+        game_playtime = game_data['playtime_forever']
+
+        # Get completion data from HLTB API using compatible name
+        name_searchable = strip_trailing_edition(game_name)
+        name_searchable = strip_apostrophes(name_searchable)
+        search_data = api_search(name_searchable)
+
+        if search_data == ERR_HLTB_NO_DATA:
+            print(colourise('No HLTB data was found for this game.'))
+            main()
+
+        # Prepare HLTB completion data for equation
+        story_duration = format_half_hours(search_data['comp_main'])
+        sides_duration = format_half_hours(search_data['comp_plus'])
+        compl_duration = format_half_hours(search_data['comp_100'])
+        style_duration = format_half_hours(search_data['comp_all'])
+
+        print(colourise('You have played'))
+
+        output = get_printable_game_data(
+            game_prefix = 'You most recently played ',
+            game_name = game_name,
+            game_suffix = '(Currently played {0})'.format(append_hours(format_dec_hours(game_playtime))),
+            story_duration = story_duration,
+            sides_duration = sides_duration,
+            compl_duration = compl_duration,
+            style_duration = style_duration,
+        )
+
+        print(colourise(output))
     except HTTPError as e:
         handle_http_error(e)
 

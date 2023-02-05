@@ -362,7 +362,7 @@ def steam_library(is_backlog: bool =  False):
             print(colourise('No data returned from Steam. Please check the visibility of your user profile.'))
             steam_api_key = ''
             steam_user_id = ''
-            steam_library()
+            main()
 
         total_games = str(data['game_count'])
 
@@ -539,7 +539,7 @@ def get_by_id(is_steam_id: bool = False):
 
     if not game_id.isdigit():
         print(colourise('Invalid ID. Must be an integer.'))
-        get_by_id()
+        get_by_id(is_steam_id)
 
     # Set required request headers
     id_headers = get_http_headers(False)

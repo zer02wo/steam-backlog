@@ -52,6 +52,7 @@ def main():
     # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
     # Define allowed command terms
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
+    FLAGS_BACKLOG = ['BACKLOG']
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
     CMD_ID = ['ID', 'DETAIL']
     CMD_QUIT = ['QUIT', 'Q']
@@ -67,7 +68,13 @@ def main():
     input_str = 'Please enter your desired command/number:'
 
     for i, cmd in enumerate(cmd_list, start=1):
-        input_str += '\n{index}: {command}'.format(index = i, command = cmd.capitalize())
+        # TODO: Need to figure out how to reference the correct flags.
+            # TODO: Might need to update cmd_list structure
+        input_str += '\n{index}: {command} {flags}'.format(
+            index = i,
+            command = cmd.capitalize(),
+            flags = format_cmd_flags(FLAGS_BACKLOG).lower(),
+        )
 
     user_cmd = input(colourise(input_str)).strip().upper()
 
@@ -87,6 +94,17 @@ def main():
 # Prefix string with ANSI colour code and suffix with reset code
 def colourise(string: str) -> str:
     return colour_prefix + string + COLOUR_SUFFIX + '\n'
+
+# Format list of flags to output string
+def format_cmd_flags(flags: list) -> str:
+    output = '['
+
+    for flag in flags:
+        output += ' --{flag} '.format(flag = flag)
+
+    output += ']'
+
+    return output
 
 # Provide HTTP headers to make requests
 def get_http_headers(isJson: bool) -> dict:

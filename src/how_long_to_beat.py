@@ -54,26 +54,42 @@ def main():
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     FLAGS_BACKLOG = ['BACKLOG']
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
+    FLAGS_SEARCH = []
     CMD_ID = ['ID', 'DETAIL']
+    FLAGS_ID = []
     CMD_QUIT = ['QUIT', 'Q']
+    FLAGS_QUIT = []
+
+    CMD_KEY = 'CMD'
+    FLAGS_KEY = 'FLAGS'
 
     cmd_list = [
-        CMD_BACKLOG[0],
-        CMD_SEARCH[0],
-        CMD_ID[0],
-        CMD_QUIT[0],
+        {
+            CMD_KEY: CMD_BACKLOG[0],
+            FLAGS_KEY: FLAGS_BACKLOG,
+        },
+        {
+            CMD_KEY: CMD_SEARCH[0],
+            FLAGS_KEY: FLAGS_SEARCH,
+        },
+        {
+            CMD_KEY: CMD_ID[0],
+            FLAGS_KEY: FLAGS_ID,
+        },
+        {
+            CMD_KEY: CMD_QUIT[0],
+            FLAGS_KEY: FLAGS_QUIT,
+        },
     ]
 
     # Output list of possible commands/IDs
     input_str = 'Please enter your desired command/number:'
 
     for i, cmd in enumerate(cmd_list, start=1):
-        # TODO: Need to figure out how to reference the correct flags.
-            # TODO: Might need to update cmd_list structure
         input_str += '\n{index}: {command} {flags}'.format(
             index = i,
-            command = cmd.capitalize(),
-            flags = format_cmd_flags(FLAGS_BACKLOG).lower(),
+            command = cmd[CMD_KEY].capitalize(),
+            flags = format_cmd_flags(cmd[FLAGS_KEY]),
         )
 
     user_input = input(colourise(input_str)).strip().upper().split(' --')
@@ -81,10 +97,12 @@ def main():
     user_flags = user_input[1:]
 
     # Perform user's desired command
+    # TODO: Fix bug with accessing command index
     if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
         is_backlog = False
 
         # TODO: Figure out approach to not have hardcoded strings for each flag check
+            # TODO: Probably with a dictionary? like dict[flag_name] = True
         if user_flags and 'BACKLOG' in user_flags:
             is_backlog = True
 
@@ -105,10 +123,13 @@ def colourise(string: str) -> str:
 
 # Format list of flags to output string
 def format_cmd_flags(flags: list) -> str:
+    if not flags:
+        return ''
+
     output = '['
 
     for flag in flags:
-        output += ' --{flag} '.format(flag = flag)
+        output += ' --{flag} '.format(flag = flag.lower())
 
     output += ']'
 

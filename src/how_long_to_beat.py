@@ -49,10 +49,11 @@ def main():
     global colour_prefix
     colour_prefix = colours.GREEN
 
-    # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
     # Define allowed command terms and optional flags
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     FLAGS_BACKLOG = ['BACKLOG']
+    CMD_RECENT = ['RECENT', 'PAST', 'LATEST']
+    FLAGS_RECENT = []
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
     FLAGS_SEARCH = []
     CMD_ID = ['ID', 'DETAIL']
@@ -68,6 +69,10 @@ def main():
         {
             CMD_KEY: CMD_BACKLOG[0],
             FLAGS_KEY: FLAGS_BACKLOG,
+        },
+        {
+            CMD_KEY: CMD_RECENT[0],
+            FLAGS_KEY: FLAGS_RECENT,
         },
         {
             CMD_KEY: CMD_SEARCH[0],
@@ -109,6 +114,8 @@ def main():
             is_backlog = True
 
         steam_library(is_backlog)
+    elif user_cmd in CMD_RECENT or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_RECENT[0]):
+        steam_recently_played()
     elif user_cmd in CMD_SEARCH or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_SEARCH[0]):
         search_name()
     elif user_cmd in CMD_ID or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_ID[0]):
@@ -514,6 +521,15 @@ def steam_library(is_backlog: bool =  False):
         handle_http_error(e)
 
     main()
+
+# Output remaining time left on most recently played Steam game
+def steam_recently_played():
+    global colour_prefix
+    colour_prefix = colours.GREY
+
+    # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
+        # https://developer.valvesoftware.com/wiki/Steam_Web_API#GetRecentlyPlayedGames_.28v0001.29
+    print(colourise('TODO: Recently played Steam game'))
 
 # Output game completion data from search term
 def search_name(game_name: str = ''):

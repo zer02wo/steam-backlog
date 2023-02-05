@@ -16,11 +16,15 @@ Uses data from:
 - Lightweight command-line interface, perfect for working with data.
 - Ability to get estimates for different types of completion states.
   - Tailor to your own playstyle. Speedrunner or achievement hunter.
-- Randomly select a game from your list to pick as your next one to play.
-  - Filter to find a game the right length for what time you have.
+- See data for the game you've most recently played, so you'll know how long it'll take to finish up.
 
 ## Project Status
-In Progress
+Completed - **v1.0.0**
+
+- Scope changed slightly throughout development of the project, but the most important features have been - implemented.
+- In the future I would like to revisit to improve the internals, more specifically:
+  - Creating a cached version of the Steam library/backlog data to reduce requests made.
+  - Improving the way flags are implemented to be more extensible/maintainable.
 
 ## License
 [MIT](LICENSE)

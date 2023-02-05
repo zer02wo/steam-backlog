@@ -97,7 +97,7 @@ def main():
     user_flags = user_input[1:]
 
     # Perform user's desired command
-    if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
+    if user_cmd in CMD_BACKLOG or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_BACKLOG[0]):
         is_backlog = False
 
         # TODO: Figure out approach to not have hardcoded strings for each flag check
@@ -106,11 +106,11 @@ def main():
             is_backlog = True
 
         steam_library(is_backlog)
-    elif user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
+    elif user_cmd in CMD_SEARCH or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_SEARCH[0]):
         search_name()
-    elif user_cmd in CMD_ID or user_cmd == str(cmd_list.index(CMD_ID[0]) + 1):
+    elif user_cmd in CMD_ID or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_ID[0]):
         get_by_id()
-    elif user_cmd in CMD_QUIT or user_cmd == str(cmd_list.index(CMD_QUIT[0]) + 1):
+    elif user_cmd in CMD_QUIT or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_QUIT[0]):
         user_quit()
     else:
         print(colourise('Sorry, I don\'t recognise that command.'))
@@ -135,12 +135,14 @@ def format_cmd_flags(flags: list) -> str:
     return output
 
 # Get index of dictionary containing relevant command data
-def find_cmd_index(cmd_list: list, cmd_key: str, cmd_val: str) -> int:
+def find_cmd_index(cmd_list: list, cmd_key: str, cmd_val: str) -> str:
+    # For each dictionary in list
     for i, cmd_dict in enumerate(cmd_list):
+        # Return string version of index if matches value
         if cmd_dict[cmd_key] == cmd_val:
-            return i + 1
+            return str(i + 1)
 
-    return -1
+    return str(-1)
 
 # Provide HTTP headers to make requests
 def get_http_headers(isJson: bool) -> dict:

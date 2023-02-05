@@ -244,13 +244,13 @@ def append_hours(prefix: float|str) -> str:
 
 # Reusable function to print game data
 def get_printable_game_data(
-    game_prefix: str,
-    game_name: str,
-    game_suffix: str,
     story_duration: float|str,
     sides_duration: float|str,
     compl_duration: float|str,
     style_duration: float|str,
+    game_prefix: str = '',
+    game_name: str = '',
+    game_suffix: str = '',
 ):
     output = '''{prefix}{name}: {suffix}
         Main Story - {story}
@@ -476,7 +476,6 @@ def steam_library(is_backlog: bool =  False):
                 style_dur_total += style_duration
 
             output = get_printable_game_data(
-                game_prefix = '',
                 game_name = game_name,
                 game_suffix = '(Currently played {0})'.format(append_hours(format_dec_hours(game_playtime))),
                 story_duration = story_duration,
@@ -491,8 +490,6 @@ def steam_library(is_backlog: bool =  False):
 
         total_output = get_printable_game_data(
             game_prefix = 'Total time to get through Steam library backlog',
-            game_name = '',
-            game_suffix = '',
             story_duration = story_dur_total,
             sides_duration = sides_dur_total,
             compl_duration = compl_dur_total,
@@ -593,7 +590,6 @@ def steam_recently_played():
         output = get_printable_game_data(
             game_prefix = 'You most recently played - ',
             game_name = game_name,
-            game_suffix = '',
             story_duration = story_duration,
             sides_duration = sides_duration,
             compl_duration = compl_duration,
@@ -637,7 +633,6 @@ def search_name(game_name: str = ''):
     output = get_printable_game_data(
         game_prefix = 'Most relevant result for ',
         game_name = game_name,
-        game_suffix = '',
         story_duration = story_duration,
         sides_duration = sides_duration,
         compl_duration = compl_duration,
@@ -689,7 +684,6 @@ def get_by_id(is_steam_id: bool = False):
         output = get_printable_game_data(
             game_prefix = 'Game completion times for ',
             game_name = game_name,
-            game_suffix = '',
             story_duration = story_duration,
             sides_duration = sides_duration,
             compl_duration = compl_duration,

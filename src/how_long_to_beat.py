@@ -494,7 +494,7 @@ def steam_library(is_backlog: bool =  False):
     main()
 
 # Output game completion data from search term
-def search_name():
+def search_name(game_name: str = ''):
     global colour_prefix
     colour_prefix = colours.BLUE
 
@@ -540,6 +540,51 @@ def get_by_id(is_steam_id: bool = False):
     if not game_id.isdigit():
         print(colourise('Invalid ID. Must be an integer.'))
         get_by_id(is_steam_id)
+
+    # Different lookup service required, HLTB does not natively support Steam app IDs
+    if is_steam_id:
+        game_name = app_id_lookup(game_id)
+
+        if game_name == ERR_STEAM_GAME_REMOVED or game_name == ERR_STEAM_TYPE_APP:
+            print(
+                colourise(
+                    'Unable to find data for this Steam ID, please ensure it is valid/still present on the Steam storefront.'
+                )
+            )
+            get_by_id(is_steam_id)
+
+        name_searchable = strip_trailing_edition(game_name)
+        name_searchable = strip_apostrophes(name_searchable)
+        data = api_search(name_searchable)
+
+        if data == ERR_HLTB_NO_DATA:
+            print(colourise('Unable to find HLTB data for this Steam ID, please ensure it is valid.'))
+            get_by_id(is_steam_id)
+
+        # Output HLTB data from search API response
+        # TODO: Refactor this output to reusable function
+        story_duration = format_half_hours(data['comp_main'])
+        sides_duration = format_half_hours(data['comp_plus'])
+        compl_duration = format_half_hours(data['comp_100'])
+        style_duration = format_half_hours(data['comp_all'])
+
+        output = '''Game completion times for {0}:
+            Main Story - {1}
+            Main + Sides - {2}
+            Completionist - {3}
+            All Styles - {4}
+        '''.format(
+            game_name,
+            append_hours(story_duration),
+            append_hours(sides_duration),
+            append_hours(compl_duration),
+            append_hours(style_duration),
+        )
+
+        print(colourise(output))
+
+        # Early return to main function
+        main()
 
     # Set required request headers
     id_headers = get_http_headers(False)

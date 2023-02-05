@@ -56,7 +56,7 @@ def main():
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
     FLAGS_SEARCH = []
     CMD_ID = ['ID', 'DETAIL']
-    FLAGS_ID = []
+    FLAGS_ID = ['STEAM']
     CMD_QUIT = ['QUIT', 'Q']
     FLAGS_QUIT = []
 
@@ -112,7 +112,14 @@ def main():
     elif user_cmd in CMD_SEARCH or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_SEARCH[0]):
         search_name()
     elif user_cmd in CMD_ID or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_ID[0]):
-        get_by_id()
+        if not user_flags:
+            get_by_id()
+
+        is_steam_id = False
+        if 'STEAM' in user_flags:
+            is_steam_id = True
+
+        get_by_id(is_steam_id)
     elif user_cmd in CMD_QUIT or user_cmd == find_cmd_index(cmd_list, CMD_KEY, CMD_QUIT[0]):
         user_quit()
     else:
@@ -523,12 +530,12 @@ def search_name():
     main()
 
 # Output game completion data from identifier
-def get_by_id():
+def get_by_id(is_steam_id: bool = False):
     global colour_prefix
     colour_prefix = colours.MAGENTA
 
-    # TODO: Add support for Steam ID too
-    game_id = input(colourise('Enter HLTB game ID...')).strip()
+    id_type = 'Steam' if is_steam_id else 'HLTB'
+    game_id = input(colourise('Enter {service} game ID...').format(service = id_type)).strip()
 
     if not game_id.isdigit():
         print(colourise('Invalid ID. Must be an integer.'))

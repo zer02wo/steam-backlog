@@ -50,7 +50,7 @@ def main():
     colour_prefix = colours.GREEN
 
     # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
-    # Define allowed command terms
+    # Define allowed command terms and optional flags
     CMD_BACKLOG = ['STEAM', 'BACKLOG', 'LIBRARY', 'LIB', 'GAMES']
     FLAGS_BACKLOG = ['BACKLOG']
     CMD_SEARCH = ['SEARCH', 'TERM', 'NAME']
@@ -60,6 +60,7 @@ def main():
     CMD_QUIT = ['QUIT', 'Q']
     FLAGS_QUIT = []
 
+    # Create command data structure
     CMD_KEY = 'CMD'
     FLAGS_KEY = 'FLAGS'
 
@@ -92,6 +93,7 @@ def main():
             flags = format_cmd_flags(cmd[FLAGS_KEY]),
         )
 
+    # Parse user input for command and flags
     user_input = input(colourise(input_str)).strip().upper().split(' --')
     user_cmd = user_input[0].strip()
     user_flags = user_input[1:]

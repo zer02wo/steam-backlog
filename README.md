@@ -21,7 +21,7 @@ Uses data from:
 ## Project Status
 Completed - **v1.0.0**
 
-- Scope changed slightly throughout development of the project, but the most important features have been - implemented.
+- Scope changed slightly throughout development of the project, but the most important features have been implemented.
 - In the future I would like to revisit to improve the internals, more specifically:
   - Creating a cached version of the Steam library/backlog data to reduce requests made.
   - Improving the way flags are implemented to be more extensible/maintainable.

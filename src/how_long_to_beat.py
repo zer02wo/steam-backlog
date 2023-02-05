@@ -262,7 +262,7 @@ def app_id_lookup(app_id: int) -> str:
         handle_http_error(e)
 
 # Output game completion data from Steam library
-def steam_library():
+def steam_library(is_backlog: bool =  True):
     global colour_prefix
     colour_prefix = colours.CYAN
 
@@ -317,6 +317,11 @@ def steam_library():
         for game in games_list:
             game_id = game['appid']
             game_playtime = game['playtime_forever']
+
+            # Only interested in games with no playtime in backlog mode
+            if is_backlog and game_playtime:
+                continue
+
             game_name = app_id_lookup(game_id)
 
             # Error getting game name from Steam lookup
@@ -388,7 +393,7 @@ def steam_library():
 
         print(
             colourise(
-                'You have played games on Steam for a total of {hours}'.format(
+                'You have played these games on Steam for a total of {hours}'.format(
                     hours = append_hours(format_dec_hours(total_playtime))
                 )
             )

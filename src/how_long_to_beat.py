@@ -14,6 +14,7 @@ HLTB_SEARCH_URL = HLTB_BASE_URL + 'api/search'
 # Global Steam URL constants
 STEAM_BASE_URL = 'https://api.steampowered.com/'
 STEAM_LIB_URL = STEAM_BASE_URL + 'IPlayerService/GetOwnedGames/v0001/'
+STEAM_REC_URL = STEAM_BASE_URL + 'IPlayerService/GetRecentlyPlayedGames/v0001/'
 
 STEAM_STORE_BASE_URL = 'https://store.steampowered.com/'
 STEAM_APP_LOOKUP_URL = STEAM_STORE_BASE_URL + 'api/appdetails'
@@ -346,6 +347,7 @@ def app_id_lookup(app_id: int) -> str:
         url = STEAM_APP_LOOKUP_URL,
         id = app_id,
     )
+
     lookup_headers = get_http_headers(True)
 
     response = requests.get(
@@ -380,11 +382,13 @@ def steam_library(is_backlog: bool =  False):
     global steam_user_id
     get_steam_details()
 
+    # Create request to API endpoint for all user's games
     user_library_url = '{base}?key={key}&steamid={id}'.format(
         base = STEAM_LIB_URL,
         key = steam_api_key,
         id = steam_user_id,
     )
+
     library_headers = get_http_headers(True)
 
     response = requests.get(
@@ -537,9 +541,28 @@ def steam_recently_played():
     global steam_user_id
     get_steam_details()
 
-    # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
-        # https://developer.valvesoftware.com/wiki/Steam_Web_API#GetRecentlyPlayedGames_.28v0001.29
-    print(colourise('TODO: Recently played Steam game'))
+    # Create request to API endpoint for most recently played game
+    recent_url = '{base}?key={key}&steamid={id}&count=1'.format(
+        base = STEAM_REC_URL,
+        key = steam_api_key,
+        id = steam_user_id,
+    )
+
+    recent_headers = get_http_headers(True)
+
+    response = requests.get(
+        url = recent_url,
+        headers = recent_headers,
+    )
+
+    try:
+        # TODO: Parse request response
+        response.raise_for_status()
+        data = json.loads(response.text)['response']
+
+        print(data)
+    except HTTPError as e:
+        handle_http_error(e)
 
     main()
 

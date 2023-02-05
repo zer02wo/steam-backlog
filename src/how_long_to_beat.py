@@ -572,7 +572,8 @@ def steam_recently_played():
 
         game_data = data['games'][0]
         game_name = game_data['name']
-        game_playtime = game_data['playtime_forever']
+        total_playtime = game_data['playtime_forever']
+        recent_playtime = game_data['playtime_2weeks']
 
         # Get completion data from HLTB API using compatible name
         name_searchable = strip_trailing_edition(game_name)
@@ -583,18 +584,16 @@ def steam_recently_played():
             print(colourise('No HLTB data was found for this game.'))
             main()
 
-        # Prepare HLTB completion data for equation
+        # Prepare HLTB completion data for output
         story_duration = format_half_hours(search_data['comp_main'])
         sides_duration = format_half_hours(search_data['comp_plus'])
         compl_duration = format_half_hours(search_data['comp_100'])
         style_duration = format_half_hours(search_data['comp_all'])
 
-        print(colourise('You have played'))
-
         output = get_printable_game_data(
-            game_prefix = 'You most recently played ',
+            game_prefix = 'You most recently played - ',
             game_name = game_name,
-            game_suffix = '(Currently played {0})'.format(append_hours(format_dec_hours(game_playtime))),
+            game_suffix = '',
             story_duration = story_duration,
             sides_duration = sides_duration,
             compl_duration = compl_duration,
@@ -602,6 +601,15 @@ def steam_recently_played():
         )
 
         print(colourise(output))
+
+        print(
+            colourise(
+                'You have played {total} in total ({recent} in the past 2 weeks).'.format(
+                    total = append_hours(format_dec_hours(total_playtime)),
+                    recent = append_hours(format_dec_hours(recent_playtime)),
+                )
+            )
+        )
     except HTTPError as e:
         handle_http_error(e)
 

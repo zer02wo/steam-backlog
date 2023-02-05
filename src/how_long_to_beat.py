@@ -262,7 +262,7 @@ def app_id_lookup(app_id: int) -> str:
         handle_http_error(e)
 
 # Output game completion data from Steam library
-def steam_library(is_backlog: bool =  True):
+def steam_library(is_backlog: bool =  False):
     global colour_prefix
     colour_prefix = colours.CYAN
 
@@ -306,6 +306,7 @@ def steam_library(is_backlog: bool =  True):
         print(colourise('Your have {num} games in your library!'.format(num = total_games)))
 
         games_list = data['games']
+        total_unplayed_games = 0
         total_playtime = 0
         story_dur_total = 0
         sides_dur_total = 0
@@ -335,6 +336,10 @@ def steam_library(is_backlog: bool =  True):
                 continue
 
             total_playtime += game_playtime
+
+            # Keep track of games with 0 time played
+            if not game_playtime:
+                total_unplayed_games += 1
 
             # Get completion data from HLTB API using compatibile name
             name_searchable = strip_trailing_edition(game_name)
@@ -393,8 +398,10 @@ def steam_library(is_backlog: bool =  True):
 
         print(
             colourise(
-                'You have played these games on Steam for a total of {hours}'.format(
-                    hours = append_hours(format_dec_hours(total_playtime))
+                '''You have played these games on Steam for a total of {hours}!
+                But {unplayed} of these games you have never played before!'''.format(
+                    hours = append_hours(format_dec_hours(total_playtime)),
+                    unplayed = total_unplayed_games,
                 )
             )
         )

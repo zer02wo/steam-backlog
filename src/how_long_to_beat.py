@@ -329,6 +329,16 @@ def api_search(search_str: str) -> dict:
     except HTTPError as e:
         handle_http_error(e)
 
+# Get Steam API key/user ID from memory or user
+def get_steam_details():
+    global steam_api_key
+    if not steam_api_key:
+        steam_api_key = input(colourise('Please enter your Steam API key...'))
+
+    global steam_user_id
+    if not steam_user_id:
+        steam_user_id = input(colourise('Please enter your Steam account ID...'))
+
 # Lookup game name from Steam app ID
 def app_id_lookup(app_id: int) -> str:
 
@@ -367,12 +377,8 @@ def steam_library(is_backlog: bool =  False):
     colour_prefix = colours.CYAN
 
     global steam_api_key
-    if not steam_api_key:
-        steam_api_key = input(colourise('Please enter your Steam API key...'))
-
     global steam_user_id
-    if not steam_user_id:
-        steam_user_id = input(colourise('Please enter your Steam account ID...'))
+    get_steam_details()
 
     user_library_url = '{base}?key={key}&steamid={id}'.format(
         base = STEAM_LIB_URL,
@@ -527,9 +533,15 @@ def steam_recently_played():
     global colour_prefix
     colour_prefix = colours.GREY
 
+    global steam_api_key
+    global steam_user_id
+    get_steam_details()
+
     # TODO: Another command using GetRecentlyPlayedGames to check EST on how long remaining on last game played (by subtracting current playtime)
         # https://developer.valvesoftware.com/wiki/Steam_Web_API#GetRecentlyPlayedGames_.28v0001.29
     print(colourise('TODO: Recently played Steam game'))
+
+    main()
 
 # Output game completion data from search term
 def search_name(game_name: str = ''):

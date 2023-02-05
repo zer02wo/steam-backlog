@@ -97,7 +97,6 @@ def main():
     user_flags = user_input[1:]
 
     # Perform user's desired command
-    # TODO: Fix bug with accessing command index
     if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
         is_backlog = False
 
@@ -134,6 +133,14 @@ def format_cmd_flags(flags: list) -> str:
     output += ']'
 
     return output
+
+# Get index of dictionary containing relevant command data
+def find_cmd_index(cmd_list: list, cmd_key: str, cmd_val: str) -> int:
+    for i, cmd_dict in enumerate(cmd_list):
+        if cmd_dict[cmd_key] == cmd_val:
+            return i + 1
+
+    return -1
 
 # Provide HTTP headers to make requests
 def get_http_headers(isJson: bool) -> dict:

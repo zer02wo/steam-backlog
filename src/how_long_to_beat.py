@@ -76,11 +76,19 @@ def main():
             flags = format_cmd_flags(FLAGS_BACKLOG).lower(),
         )
 
-    user_cmd = input(colourise(input_str)).strip().upper()
+    user_input = input(colourise(input_str)).strip().upper().split(' --')
+    user_cmd = user_input[0].strip()
+    user_flags = user_input[1:]
 
     # Perform user's desired command
     if user_cmd in CMD_BACKLOG or user_cmd == str(cmd_list.index(CMD_BACKLOG[0]) + 1):
-        steam_library()
+        is_backlog = False
+
+        # TODO: Figure out approach to not have hardcoded strings for each flag check
+        if user_flags and 'BACKLOG' in user_flags:
+            is_backlog = True
+
+        steam_library(is_backlog)
     elif user_cmd in CMD_SEARCH or user_cmd == str(cmd_list.index(CMD_SEARCH[0]) + 1):
         search_name()
     elif user_cmd in CMD_ID or user_cmd == str(cmd_list.index(CMD_ID[0]) + 1):

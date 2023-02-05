@@ -234,6 +234,33 @@ def append_hours(prefix: float|str) -> str:
 
     return '{pre} hours'.format(pre = prefix)
 
+# Reusable function to print game data
+def get_printable_game_data(
+    game_prefix: str,
+    game_name: str,
+    game_suffix: str,
+    story_duration: float|str,
+    sides_duration: float|str,
+    compl_duration: float|str,
+    style_duration: float|str,
+):
+    output = '''{prefix}{name}: {suffix}
+        Main Story - {story}
+        Main + Sides - {sides}
+        Completionist - {compl}
+        All Styles - {style}
+    '''.format(
+        prefix = game_prefix,
+        name = game_name,
+        suffix = game_suffix,
+        story = append_hours(story_duration),
+        sides = append_hours(sides_duration),
+        compl = append_hours(compl_duration),
+        style = append_hours(style_duration),
+    )
+
+    return output
+
 # Search API for game by term and return entire game data JSON
 def api_search(search_str: str) -> dict:
     search_terms = search_str.split(' ')
@@ -431,33 +458,28 @@ def steam_library(is_backlog: bool =  False):
             if type(style_duration) == float:
                 style_dur_total += style_duration
 
-            output = '''{0}: (Currently played {1})
-                Main Story - {2}
-                Main + Sides - {3}
-                Completionist - {4}
-                All Styles - {5}
-            '''.format(
-                game_name,
-                append_hours(format_dec_hours(game_playtime)),
-                append_hours(story_duration),
-                append_hours(sides_duration),
-                append_hours(compl_duration),
-                append_hours(style_duration),
+            output = get_printable_game_data(
+                game_prefix = '',
+                game_name = game_name,
+                game_suffix = '(Currently played {0})'.format(append_hours(format_dec_hours(game_playtime))),
+                story_duration = story_duration,
+                sides_duration = sides_duration,
+                compl_duration = compl_duration,
+                style_duration = style_duration,
             )
 
             print(colourise(output))
 
         # Output aggregated library data
-        total_output = '''Total time to get through Steam library backlog:
-            Main Story - {0}
-            Main + Sides - {1}
-            Completionist - {2}
-            All Styles - {3}
-        '''.format(
-            append_hours(story_dur_total),
-            append_hours(sides_dur_total),
-            append_hours(compl_dur_total),
-            append_hours(style_dur_total),
+
+        total_output = get_printable_game_data(
+            game_prefix = 'Total time to get through Steam library backlog',
+            game_name = '',
+            game_suffix = '',
+            story_duration = story_dur_total,
+            sides_duration = sides_dur_total,
+            compl_duration = compl_dur_total,
+            style_duration = style_dur_total,
         )
 
         print(colourise(total_output))
@@ -512,17 +534,14 @@ def search_name(game_name: str = ''):
     compl_duration = format_half_hours(data['comp_100'])
     style_duration = format_half_hours(data['comp_all'])
 
-    output = '''Most relevant result for {0}:
-        Main Story - {1}
-        Main + Sides - {2}
-        Completionist - {3}
-        All Styles - {4}
-    '''.format(
-        game_name,
-        append_hours(story_duration),
-        append_hours(sides_duration),
-        append_hours(compl_duration),
-        append_hours(style_duration),
+    output = get_printable_game_data(
+        game_prefix = 'Most relevant result for ',
+        game_name = game_name,
+        game_suffix = '',
+        story_duration = story_duration,
+        sides_duration = sides_duration,
+        compl_duration = compl_duration,
+        style_duration = style_duration,
     )
 
     print(colourise(output))
@@ -562,23 +581,19 @@ def get_by_id(is_steam_id: bool = False):
             get_by_id(is_steam_id)
 
         # Output HLTB data from search API response
-        # TODO: Refactor this output to reusable function
         story_duration = format_half_hours(data['comp_main'])
         sides_duration = format_half_hours(data['comp_plus'])
         compl_duration = format_half_hours(data['comp_100'])
         style_duration = format_half_hours(data['comp_all'])
 
-        output = '''Game completion times for {0}:
-            Main Story - {1}
-            Main + Sides - {2}
-            Completionist - {3}
-            All Styles - {4}
-        '''.format(
-            game_name,
-            append_hours(story_duration),
-            append_hours(sides_duration),
-            append_hours(compl_duration),
-            append_hours(style_duration),
+        output = get_printable_game_data(
+            game_prefix = 'Game completion times for ',
+            game_name = game_name,
+            game_suffix = '',
+            story_duration = story_duration,
+            sides_duration = sides_duration,
+            compl_duration = compl_duration,
+            style_duration = style_duration,
         )
 
         print(colourise(output))

@@ -101,8 +101,8 @@ def main():
         if not user_flags:
             steam_library()
 
-        # TODO: Figure out approach to not have hardcoded strings for each flag check
-            # TODO: Probably with a dictionary? like dict[flag_name] = True
+        # TODO: Look into better approach than hardcoding flag strings
+        is_backlog = False
         if 'BACKLOG' in user_flags:
             is_backlog = True
 
